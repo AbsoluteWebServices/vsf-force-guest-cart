@@ -14,6 +14,7 @@ const setToken = async (context) => {
   const cache = Vue.prototype.$db.cartsCollection
 
   await cache.setItem('current-cart-token', token)
+  await cache.setItem('external-cart-token', token)
 
   if (params.has('__ci')) {
     const ci: any = params.get('__ci')
@@ -62,6 +63,11 @@ const extendCartVuex = {
     async load (context, { forceClientState = false }: {forceClientState?: boolean} = {}) {
       await setToken(context)
       return context.dispatch('coreLoad', { forceClientState })
+    },
+    async isExternalCart ({ getters }) {
+      const externalCartToken = await Vue.prototype.$db.cartsCollection.getItem('external-cart-token')
+      if (!externalCartToken) return false
+      return getters.getCartToken === externalCartToken
     }
   },
   mutations: {
