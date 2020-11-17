@@ -15,6 +15,8 @@ const setToken = async (context) => {
 
   await cache.setItem('current-cart-token', token)
   await cache.setItem('external-cart-token', token)
+  await cache.setItem('current-cart-hash', null)
+  await cache.setItem('current-cart', null)
 
   if (params.has('__ci')) {
     const ci: any = params.get('__ci')
